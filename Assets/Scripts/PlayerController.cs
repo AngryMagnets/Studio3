@@ -4,7 +4,8 @@ using UnityEngine.Rendering.UI;
 
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField] private float hSpeed, hSpeedMax, vSpeed;
+    [SerializeField] private float hSpeed, hSpeedMax, vSpeed, dSpeed, dSpeedMax, dDuration, dTimer;
+    private bool isDashing = false, canDash;
     private Rigidbody playerBody;
     [SerializeField] private int maxJumps;
     private int jumps;
@@ -20,19 +21,32 @@ public class PlayerController : MonoBehaviour
     private void Update()
     {
         clampHorizontalMovement();
+        if (isDashing) { dTimer -= Time.deltaTime; }
+        if (dTimer <= 0 && isDashing) { StopDash(); isDashing = false; }
         //prevPosition = transform.position;
     }
     public void MoveHorizontal (Vector3 dir)
     {
-        playerBody.AddRelativeForce(hSpeed * dir);
+        playerBody.AddRelativeForce(hSpeed * dir, ForceMode.VelocityChange);
     }
     public void MoveVertical()
     {
         if (jumps > 0)
         {
             jumps--;
-            playerBody.AddForce(Vector3.up * vSpeed, ForceMode.VelocityChange);
+            playerBody.AddForce(Vector3.up * vSpeed, ForceMode.Impulse);
         }
+    }
+    public void MoveDash()
+    {
+        if (isDashing || !canDash) { return; }
+        isDashing = true; canDash = false;
+        hSpeed += dSpeed; hSpeedMax += dSpeedMax;
+        dTimer = dDuration;
+    }
+    private void StopDash ()
+    {
+        hSpeed -= dSpeed; hSpeedMax -= dSpeedMax;
     }
     void clampHorizontalMovement()
     {
@@ -46,6 +60,7 @@ public class PlayerController : MonoBehaviour
         if (collision.gameObject.CompareTag("ground"))
         {
             jumps = maxJumps;
+            canDash = true;
         }
     }
 }
