@@ -47,6 +47,7 @@ public class PlayerController : MonoBehaviour
     private void StopDash ()
     {
         hSpeed -= dSpeed; hSpeedMax -= dSpeedMax;
+        playerBody.linearVelocity = playerBody.linearVelocity * 0.1f;
     }
     void clampHorizontalMovement()
     {
