@@ -13,7 +13,7 @@ public class CameraController : MonoBehaviour
         Vector3 dirCamera = new Vector3(dir.y, 0, 0)
               , dirPlayer = new Vector3(0, dir.x, 0);
 
-        Debug.Log("Camera movement vector: " + dir);
+        //Debug.Log("Camera movement vector: " + dir);
         this.transform.Rotate(dirCamera * cSpeed * Time.deltaTime * -1);
         player.transform.Rotate(dirPlayer *  cSpeed * Time.deltaTime);
     }
